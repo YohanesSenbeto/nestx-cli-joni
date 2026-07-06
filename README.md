@@ -22,8 +22,28 @@ A powerful NestJS project generator with batteries included. Quickly scaffold pr
 
 ## 📦 Installation
 
+### Option 1: Install globally from npm
+
 ```bash
 npm install -g nestx
+nestx new my-nestjs-app
+```
+
+### Option 2: Use with npx (no global install needed)
+
+```bash
+npx nestx new my-nestjs-app
+```
+
+### Option 3: From source (for development)
+
+```bash
+git clone https://github.com/YohanesSenbeto/nestx-cli-joni.git
+cd nestx-cli-joni
+npm install
+npm run build
+npm link          # makes `nestx` available globally
+nestx new my-nestjs-app
 ```
 
 ## 🚀 Usage
@@ -42,6 +62,18 @@ cd my-nestjs-app
 npm install
 npm run start:dev
 ```
+
+Then visit **http://localhost:3000** — you should see `Nest application successfully started`.
+
+### Available commands
+
+```bash
+nestx new <project-name>   # Create a new NestJS project
+nestx --help               # Show help
+nestx --version            # Show version
+```
+
+> **Note:** The command is `nestx new`, **not** `nestx create`.
 
 ## 🛠️ Generated Project Structure
 
@@ -192,6 +224,111 @@ You can modify the template structure in:
 
 ```text
 src/templates/nestjs-starter/
+```
+
+## 🔧 Troubleshooting
+
+### `nestx: command not found` after `npm install -g nestx`
+
+The global npm bin directory is not in your `PATH`. Fix it permanently:
+
+```bash
+echo 'export PATH="$(npm prefix -g)/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Or use `npx` instead, which always works without PATH configuration:
+
+```bash
+npx nestx new my-nestjs-app
+```
+
+### `bash: /usr/bin/nestx: Permission denied`
+
+The symlink exists but `dist/index.js` is not executable. The `npm run build` script now sets the executable bit automatically via `chmod +x dist/index.js`, so rebuilding should fix it:
+
+```bash
+npm run build
+```
+
+If you still see the error (e.g. after a manual `tsc`), fix the permissions manually:
+
+```bash
+chmod +x dist/index.js
+# or, for a global install:
+chmod +x "$(npm prefix -g)/bin/nestx"
+```
+
+### `error: unknown command 'create'`
+
+The correct command is **`new`**, not `create`:
+
+```bash
+nestx new my-nestjs-app   # ✅ correct
+nestx create my-nestjs-app # ❌ wrong
+```
+
+### Build fails with errors from `src/templates/`
+
+The TypeScript compiler is trying to compile the template files (which import `@nestjs/common`, `prisma/config`, etc. that are not installed in the CLI). Exclude templates in `tsconfig.json`:
+
+```json
+{
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "src/templates",
+    "**/*.spec.ts",
+    "**/*.e2e-spec.ts"
+  ]
+}
+```
+
+Then rebuild:
+
+```bash
+npm run build
+```
+
+### `Failed to create project: ENOENT ... dist/templates/nestjs-starter`
+
+`tsc` only compiles TypeScript — it does **not** copy the `src/templates/` directory into `dist/`. The `npm run build` script now copies templates into `dist/templates/` using `copyfiles`, so rebuilding resolves this:
+
+```bash
+npm run build
+```
+
+If you ran `tsc` directly instead of `npm run build`, copy the templates manually:
+
+```bash
+npx copyfiles -u 1 "src/templates/**/*" dist
+```
+
+### Global install is missing the `dist/` folder
+
+If `npm install -g nestx` only installs metadata (no `dist/`), the package was published without the built files. Rebuild and republish:
+
+```bash
+npm run build
+npm publish
+```
+
+Or use `npm link` from your local clone instead of a global install.
+
+### Run directly without linking
+
+If `npm link` is problematic, run the CLI directly with node:
+
+```bash
+node ~/projects/nestx-cli/dist/index.js new my-nestjs-app
+```
+
+Or create a shell alias:
+
+```bash
+echo 'alias nestx="node ~/projects/nestx-cli/dist/index.js"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 ## 🤝 Contributing
