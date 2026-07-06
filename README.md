@@ -232,7 +232,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Yohanes Senbeto**
 
 - GitHub: [@YohanesSenbeto](https://github.com/YohanesSenbeto)
-- Twitter: [@your-twitter](https://twitter.com/your-twitter)
+- Twitter: [@your-twitter](https://x.com/YohanesSenbeto)
 
 ## ⭐ Support
 
