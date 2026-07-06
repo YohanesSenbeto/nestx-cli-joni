@@ -31,13 +31,13 @@ npm install -g nestx
 ### Create a new NestJS project
 
 ```bash
-nestx create <project-name>
+nestx new <project-name>
 ```
 
 ### Example
 
 ```bash
-nestx create my-nestjs-app
+nestx new my-nestjs-app
 cd my-nestjs-app
 npm install
 npm run start:dev
@@ -94,7 +94,7 @@ npm run build
 npm link
 
 # Test it out
-nestx create test-project
+nestx new test-project
 ```
 
 ### Available Scripts
@@ -120,10 +120,13 @@ npm link
 
 ```bash
 # Create a new project
-nestx create <project-name>
+nestx new <project-name>
 
 # Help
 nestx --help
+
+# Version
+nestx --version
 ```
 
 ## 🧪 Testing the Generated Project
